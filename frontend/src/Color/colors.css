@@ -2,14 +2,49 @@
 
 @theme {
   /* Tus colores base */
-  --color-brand-blue: #004785;
+  --color-brand-blue-dark: #004785;
   --color-brand-blue-light: #68cce7;
-  --color-brand-blue-red: #ee3124;
+  --color-brand-blue: #00bdf2;
+  --color-brand-red: #ee3124;
+  --color-brand-gray-light: #d6d7d6;
+  --color-brand-white: #ffffff;
+  --color-brand-black: #000000;
 
+  /* Línea del dashboard adaptada para que contraste con el fondo gris */
+  --color-brand-line: #004785;       
 
-  /* Tus fuentes base (se usan como font-primary o font-accent) */
+  /* Tus fuentes base */
   --font-primary: "Inter", sans-serif;
   
-  /* Tus puntos de ruptura para diseño responsivo (se usa como tablet:flex) */
+  /* Tus puntos de ruptura para diseño responsivo */
   --breakpoint-tablet: 640px;
+}
+
+/* Reset radical ajustado al NUEVO FONDO GRIS CLARO */
+html, body, #root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-height: 100vh !important;
+  background-color: var(--color-brand-gray-light) !important; /* <--- Fondo Gris */
+  color: var(--color-brand-black) !important;               /* <--- Texto Negro para contraste */
+  overflow-x: hidden;
+}
+
+.dashboard-container {
+  background-color: var(--color-brand-gray-light);            /* <--- Fondo Gris */
+  height: 100vh;
+  width: 100vw;
+  color: var(--color-brand-black);                            /* <--- Texto Negro */
+  font-family: var(--font-primary);
+}
+
+/* Ocultar barra de scroll interna en las columnas */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
