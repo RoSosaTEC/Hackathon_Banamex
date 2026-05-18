@@ -82,25 +82,6 @@ export default function OtroView() {
       {/* 1. SECCIÓN DESTACADA: TOP 3 POR SEGMENTO */}
       <div className="px-6 mb-6 grid grid-cols-3 gap-6 shrink-0">
 
-        {/* PANEL DETRACTORES */}
-        <div className="border-2 border-red-500/30 bg-red-950/10 p-4 flex flex-col">
-          <h4 className="text-red-400 font-medium tracking-wide uppercase text-xs mb-3 border-b border-red-500/20 pb-1">
-            Top 3 Detractores
-          </h4>
-          <div className="flex flex-col gap-2 flex-1 justify-center">
-            {topDetractores.map((item, idx) => (
-              <div key={idx} className="flex justify-between items-center text-xs">
-                <span className="font-light text-white/80 truncate max-w-[70%]">
-                  {idx + 1}. {item.Frase_Clave}
-                </span>
-                <span className="font-mono text-red-400/90 bg-red-400/10 px-1.5 py-0.5 border border-red-400/20">
-                  {item.Frecuencia.toLocaleString()}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* PANEL PROMOTORES */}
         <div className="border-2 border-green-500/30 bg-green-950/10 p-4 flex flex-col">
           <h4 className="text-green-400 font-medium tracking-wide uppercase text-xs mb-3 border-b border-green-500/20 pb-1">
@@ -141,22 +122,41 @@ export default function OtroView() {
           </div>
         </div>
 
+        {/* PANEL DETRACTORES */}
+        <div className="border-2 border-red-500/30 bg-red-950/10 p-4 flex flex-col">
+          <h4 className="text-red-400 font-medium tracking-wide uppercase text-xs mb-3 border-b border-red-500/20 pb-1">
+            Top 3 Detractores
+          </h4>
+          <div className="flex flex-col gap-2 flex-1 justify-center">
+            {topDetractores.map((item, idx) => (
+              <div key={idx} className="flex justify-between items-center text-xs">
+                <span className="font-light text-white/80 truncate max-w-[70%]">
+                  {idx + 1}. {item.Frase_Clave}
+                </span>
+                <span className="font-mono text-red-400/90 bg-red-400/10 px-1.5 py-0.5 border border-red-400/20">
+                  {item.Frecuencia.toLocaleString()}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
       {/* 2. BARRA DE FILTROS */}
-      <div className="flex px-6 mb-4 gap-3 max-w-4xl items-center shrink-0">
+      <div className="flex px-6 mb-4 gap-3 items-center bg-surface-raised py-4 border-b border-white/10 shrink-0">
         <input
           type="text"
           placeholder="Buscar frase clave..."
           value={searchTerm}
           onChange={(e) => { setSearchTerm(e.target.value); setVisibleCount(50); }}
-          className="flex-1 min-w-[150px] bg-black border-2 border-brand-line px-3 py-2 text-xs text-white focus:outline-none placeholder-white/40 tracking-wide font-light"
+          className="flex-1 min-w-[150px] bg-surface-elevated rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-line/50 placeholder-white/30 font-light transition-all"
         />
 
         <select
           value={selectedSegment}
           onChange={(e) => { setSelectedSegment(e.target.value); setVisibleCount(50); }}
-          className="bg-black border-2 border-brand-line px-3 py-2 text-xs text-white focus:outline-none tracking-wide font-light cursor-pointer min-w-[160px]"
+          className="bg-surface-elevated rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-line/50 font-light cursor-pointer min-w-[160px] transition-all"
         >
           <option value="">Todos los segmentos</option>
           {jsonData.summary.segments.map((segment, i) => (
@@ -171,16 +171,16 @@ export default function OtroView() {
           Mostrando {Math.min(visibleCount, filteredRows.length)} de {filteredRows.length} N-grams analizados
         </p>
         <p className="text-2xl font-light">
-          Total Insights: <span className="font-normal border-b border-brand-line/50 pb-1">{jsonData.summary.total_insights}</span>
+          Total Insights: <span className="font-bold text-brand-red border-b-2 border-brand-red pb-1">{jsonData.summary.total_insights}</span>
         </p>
       </div>
 
       {/* 3. TABLA COMPLETA CON SCROLL */}
-      <div className="flex-1 border-t-2 border-brand-line flex flex-col min-h-0 bg-black w-full">
-        <div className="grid grid-cols-3 w-full pt-4 px-4 border-b border-white/20 bg-black shrink-0">
+      <div className="flex-1 border-t-2 border-brand-line flex flex-col min-h-0 bg-surface-base w-full">
+        <div className="grid grid-cols-3 w-full pt-4 px-4 border-b border-brand-line/30 bg-surface-elevated shrink-0">
           {tableHeaders.map((headerName, index) => (
-            <div key={index} className="pb-3 relative pr-4">
-              <h3 className="text-base font-medium tracking-wide opacity-90">{headerName}</h3>
+            <div key={index} className="pb-3 relative px-3">
+              <h3 className="text-sm font-medium tracking-wide text-brand-blue">{headerName}</h3>
               {index !== tableHeaders.length - 1 && (
                 <div className="absolute top-0 right-0 h-6 w-[2px] bg-brand-line opacity-40" />
               )}
@@ -195,20 +195,21 @@ export default function OtroView() {
             </div>
           ) : (
             filteredRows.slice(0, visibleCount).map((row, rowIndex) => (
-              <div key={rowIndex} className="grid grid-cols-3 px-4 border-b border-white/5 hover:bg-white/5 transition-colors">
-                <div className="py-3 pr-4 relative min-h-[44px] flex items-center min-w-0">
+              <div key={rowIndex} className={`grid grid-cols-3 px-4 border-b border-white/5 hover:bg-brand-blue/10 transition-colors ${rowIndex % 2 === 1 ? 'bg-surface-raised' : ''}`}>
+                <div className="py-3 px-3 relative min-h-[44px] flex items-center min-w-0">
                   <p className="text-xs font-light break-words opacity-75 w-full">{row.Frase_Clave}</p>
                   <div className="absolute top-0 right-0 h-full w-[2px] bg-brand-line opacity-20" />
                 </div>
-                <div className="py-3 pr-4 relative min-h-[44px] flex items-center min-w-0">
+                <div className="py-3 px-3 relative min-h-[44px] flex items-center min-w-0">
                   <p className="text-xs font-mono opacity-75 w-full">{row.Frecuencia.toLocaleString()}</p>
                   <div className="absolute top-0 right-0 h-full w-[2px] bg-brand-line opacity-20" />
                 </div>
-                <div className="py-3 pr-4 relative min-h-[44px] flex items-center min-w-0">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded border ${row.Segmento === 'Promotores' ? 'text-green-400 border-green-400/20 bg-green-400/5' :
-                      row.Segmento === 'Detractores' ? 'text-red-400 border-red-400/20 bg-red-400/5' :
-                        'text-yellow-400 border-yellow-400/20 bg-yellow-400/5'
-                    }`}>
+                <div className="py-3 px-3 relative min-h-[44px] flex items-center justify-center min-w-0">
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded border ${
+                    row.Segmento === 'Promotores' ? 'text-green-400 border-green-400/20 bg-green-400/5' :
+                    row.Segmento === 'Detractores' ? 'text-red-400 border-red-400/20 bg-red-400/5' :
+                    'text-yellow-400 border-yellow-400/20 bg-yellow-400/5'
+                  }`}>
                     {row.Segmento}
                   </span>
                 </div>
