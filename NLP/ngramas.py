@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from ai_recommendations import generar_recomendaciones
-# 1. Cargar tu dataset limpio
+from risk_analysis import analizar_riesgos# 1. Cargar tu dataset limpio
 df_final = pd.read_csv("../Data/clean-data-all.csv", encoding="utf-8")
 
 # Stop words bancarias para limpiar el ruido
@@ -65,3 +65,7 @@ print("=" * 80)
 print("\n")
 
 print(reporte_detractores)
+
+risk_results = analizar_riesgos(df_insights)
+
+print(risk_results)
