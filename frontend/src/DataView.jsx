@@ -37,7 +37,7 @@ export default function DataView() {
       setCsvRows(data);
 
       if (data.length > 0) {
-        setCsvHeaders(Object.keys(data[0]));
+        setCsvHeaders(Object.keys(data[0]).filter(k => k !== 'cluster_name'));
         const branches = [...new Set(data.map(r => r.Id_branch).filter(Boolean))];
         setUniqueBranches(branches.sort());
       }
