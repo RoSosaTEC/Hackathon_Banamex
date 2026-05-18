@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
-
+from ai_recommendations import generar_recomendaciones
 # 1. Cargar tu dataset limpio
 df_final = pd.read_csv("../Data/clean-data-all.csv", encoding="utf-8")
 
@@ -52,3 +52,16 @@ df_insights = pd.concat([df_ngramas_detractores, df_ngramas_promotores, df_ngram
 
 #print(f"¡Listo! Archivo exportado exitosamente en: {ruta_exportacion}")
 print(df_insights.head(10)) # Mostrar una probadita de cómo quedó
+
+reporte_detractores = generar_recomendaciones(
+    df_insights,
+    segmento="Detractores"
+)
+
+print("\n")
+print("=" * 80)
+print("REPORTE IA - DETRACTORES")
+print("=" * 80)
+print("\n")
+
+print(reporte_detractores)
