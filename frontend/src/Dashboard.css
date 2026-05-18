@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-line: #ffffff;       
+  --font-primary: "Inter", sans-serif;
+}
+
+/* Reset radical para eliminar el borde izquierdo y usar el 100% de la pantalla */
+html, body, #root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-height: 100vh !important;
+  background-color: #000000 !important;
+  overflow-x: hidden;
+}
+
+.dashboard-container {
+  background-color: #000000;
+  height: 100vh;
+  width: 100vw;
+  color: #ffffff;
+  font-family: var(--font-primary);
+}
+
+/* Ocultar barra de scroll interna en las columnas */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
