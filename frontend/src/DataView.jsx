@@ -4,14 +4,8 @@ export default function DataView() {
 
   const [csvHeaders, setCsvHeaders] = useState([]);
   const [csvRows, setCsvRows] = useState([]);
-
   const [visibleCount, setVisibleCount] = useState(50);
-
   const [loading, setLoading] = useState(false);
-
-  // -------------------------
-  // FILTER STATES
-  // -------------------------
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -28,90 +22,37 @@ export default function DataView() {
   // -------------------------
 
   const fetchData = async () => {
-
     try {
-
       setLoading(true);
 
       const params = new URLSearchParams();
+      if (selectedBranch) params.append('id_branch', selectedBranch);
+      if (startDate)      params.append('start_date', startDate);
+      if (endDate)        params.append('end_date', endDate);
 
-      // OPTIONAL FILTERS
-
-      if (selectedBranch) {
-        params.append("id_branch", selectedBranch);
-      }
-
-      if (startDate) {
-        params.append("start_date", startDate);
-      }
-
-      if (endDate) {
-        params.append("end_date", endDate);
-      }
-
-      const url = `http://localhost:8000/filter-feedback?${params.toString()}`;
-
-      console.log("FETCH URL:", url);
-
-      const response = await fetch(url);
-
+      const response = await fetch(`http://localhost:8000/filter-feedback?${params.toString()}`);
       const result = await response.json();
-
-      console.log("API RESULT:", result);
-
       const data = result.data || [];
 
       setCsvRows(data);
 
-      // HEADERS
       if (data.length > 0) {
-
         setCsvHeaders(Object.keys(data[0]));
-
-        // UNIQUE BRANCHES
-        const branches = [
-          ...new Set(
-            data
-              .map(row => row.Id_branch)
-              .filter(Boolean)
-          )
-        ];
-
+        const branches = [...new Set(data.map(r => r.Id_branch).filter(Boolean))];
         setUniqueBranches(branches.sort());
       }
-
     } catch (error) {
-
-      console.error("API ERROR:", error);
-
+      console.error('API ERROR:', error);
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
-  // -------------------------
-  // INITIAL LOAD
-  // -------------------------
+  useEffect(() => { fetchData(); }, []);
 
   useEffect(() => {
-
     fetchData();
-
-  }, []);
-
-  // -------------------------
-  // AUTO FILTER FETCH
-  // -------------------------
-
-  useEffect(() => {
-
-    fetchData();
-
     setVisibleCount(50);
-
   }, [selectedBranch, startDate, endDate]);
 
   // -------------------------
@@ -119,25 +60,12 @@ export default function DataView() {
   // -------------------------
 
   const handleScrollGeneral = (e) => {
-
-    const {
-      scrollTop,
-      scrollHeight,
-      clientHeight
-    } = e.currentTarget;
-
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollHeight - scrollTop <= clientHeight + 100) {
-
       if (visibleCount < filteredRows.length) {
-
-        setVisibleCount((prev) =>
-          Math.min(prev + 50, filteredRows.length)
-        );
-
+        setVisibleCount(prev => Math.min(prev + 50, filteredRows.length));
       }
-
     }
-
   };
 
   // -------------------------
@@ -145,25 +73,14 @@ export default function DataView() {
   // -------------------------
 
   const filteredRows = csvRows.filter((row) => {
-
     if (!searchTerm) return true;
 
     const term = searchTerm.toLowerCase();
-
-    return csvHeaders.some((header) => {
-
-      const value = String(
-        row[header] || ''
-      ).toLowerCase();
-
-      return value.includes(term);
-
-    });
-
+    return csvHeaders.some(h => String(row[h] || '').toLowerCase().includes(term));
   });
 
   // -------------------------
-  // LOADING SCREEN
+  // LOADING
   // -------------------------
 
   if (loading) {
@@ -184,83 +101,35 @@ export default function DataView() {
 
     <div className="flex-1 flex flex-col min-h-0 w-full relative">
 
-      {/* FILTER BAR */}
-
-      <div className="flex px-6 mb-4 gap-3 max-w-4xl items-center">
-
-        {/* SEARCH */}
-
+      {/* BARRA DE FILTROS */}
+      <div className="flex px-6 mb-4 gap-3 items-center bg-surface-raised py-4 border-b border-white/10">
         <input
           type="text"
           placeholder="Buscar texto..."
           value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setVisibleCount(50);
-          }}
-          className="flex-1 min-w-[150px] bg-black border-2 border-brand-line px-3 py-2 text-xs text-white focus:outline-none placeholder-white/40 tracking-wide font-light"
+          onChange={(e) => { setSearchTerm(e.target.value); setVisibleCount(50); }}
+          className="flex-1 min-w-[150px] bg-surface-elevated rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-line/50 placeholder-white/30 font-light transition-all"
         />
 
         {/* BRANCH SELECT */}
 
         <select
           value={selectedBranch}
-          onChange={(e) => {
-            setSelectedBranch(e.target.value);
-            setVisibleCount(50);
-          }}
-          className="bg-black border-2 border-brand-line px-3 py-2 text-xs text-white focus:outline-none tracking-wide font-light cursor-pointer min-w-[140px]"
+          onChange={(e) => setSelectedBranch(e.target.value)}
+          className="bg-surface-elevated rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-line/50 font-light cursor-pointer min-w-[160px] transition-all"
         >
-
-          <option value="">
-            Todas las sucursales
-          </option>
-
+          <option value="">Todas las sucursales</option>
           {uniqueBranches.map((branch, i) => (
-
-            <option
-              key={i}
-              value={branch}
-            >
-              {branch}
-            </option>
-
+            <option key={i} value={branch}>{branch}</option>
           ))}
-
         </select>
 
-        {/* DATE RANGE */}
-
-        <div className="flex items-center gap-1 border-2 border-brand-line px-2 py-1 bg-black text-xs font-light">
-
-          <span className="opacity-40 text-[10px] uppercase mr-1">
-            Desde:
-          </span>
-
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => {
-              setStartDate(e.target.value);
-              setVisibleCount(50);
-            }}
-            className="bg-black text-white outline-none cursor-pointer"
-          />
-
-          <span className="opacity-40 text-[10px] uppercase mx-1">
-            Hasta:
-          </span>
-
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => {
-              setEndDate(e.target.value);
-              setVisibleCount(50);
-            }}
-            className="bg-black text-white outline-none cursor-pointer"
-          />
-
+        <div className="flex items-center gap-2 bg-surface-elevated rounded-lg px-4 py-2 text-sm font-light">
+          <span className="text-white/40 text-xs uppercase tracking-wide">Desde</span>
+          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="bg-transparent text-white outline-none cursor-pointer text-sm" />
+          <span className="text-white/20 mx-1">—</span>
+          <span className="text-white/40 text-xs uppercase tracking-wide">Hasta</span>
+          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="bg-transparent text-white outline-none cursor-pointer text-sm" />
         </div>
 
       </div>
@@ -270,113 +139,58 @@ export default function DataView() {
       <div className="flex justify-between items-end mb-2 px-6">
 
         <p className="text-xs font-mono opacity-40">
-
-          Mostrando {
-            Math.min(
-              visibleCount,
-              filteredRows.length
-            )
-          } de {filteredRows.length} filas
-
+          Mostrando {Math.min(visibleCount, filteredRows.length)} de {filteredRows.length} filas
         </p>
 
         <p className="text-2xl font-light">
-
-          Registros API:
-          <span className="font-normal border-b border-brand-line/50 pb-1 ml-2">
-            {filteredRows.length}
-          </span>
-
+          Registros: <span className="font-bold text-brand-red border-b-2 border-brand-red pb-1">{filteredRows.length}</span>
         </p>
 
       </div>
 
-      {/* TABLE */}
-
-      <div className="flex-1 border-t-2 border-brand-line flex flex-col min-h-0 bg-black w-full">
+      {/* TABLA */}
+      <div className="flex-1 border-t-2 border-brand-line flex flex-col min-h-0 bg-surface-base w-full">
 
         {/* HEADERS */}
-
-        <div className="grid grid-cols-8 w-full pt-4 px-4 border-b border-white/20 bg-black">
-
+        <div className="grid grid-cols-8 w-full pt-4 px-4 border-b border-brand-line/30 bg-surface-elevated">
           {csvHeaders.map((headerName, index) => (
-
-            <div
-              key={index}
-              className="pb-3 relative pr-4"
-            >
-
-              <h3 className="text-sm font-medium tracking-wide text-ellipsis overflow-hidden whitespace-nowrap opacity-90">
-
+            <div key={index} className="pb-3 relative px-3">
+              <h3 className="text-sm font-medium tracking-wide text-ellipsis overflow-hidden whitespace-nowrap text-brand-blue">
                 {headerName}
-
               </h3>
-
               {index !== csvHeaders.length - 1 && (
-
                 <div className="absolute top-0 right-0 h-6 w-[2px] bg-brand-line opacity-40" />
-
               )}
-
             </div>
 
           ))}
 
         </div>
 
-        {/* BODY */}
-
-        <div
-          onScroll={handleScrollGeneral}
-          className="flex-1 overflow-y-auto w-full scrollbar-none pb-8"
-        >
-
+        {/* FILAS */}
+        <div onScroll={handleScrollGeneral} className="flex-1 overflow-y-auto w-full scrollbar-none pb-8">
           {filteredRows.length === 0 ? (
-
             <div className="text-center py-20 opacity-40 font-light tracking-wide">
-
               Ningún registro coincide con los filtros.
-
             </div>
-
           ) : (
-
-            filteredRows
-              .slice(0, visibleCount)
-              .map((row, rowIndex) => (
-
-                <div
-                  key={rowIndex}
-                  className="grid grid-cols-8 px-4 border-b border-white/5 hover:bg-white/5 transition-colors"
-                >
-
-                  {csvHeaders.map((headerName, colIndex) => (
-
-                    <div
-                      key={colIndex}
-                      className="py-3 pr-4 relative min-h-[44px] flex items-center min-w-0"
-                    >
-
-                      <p className="text-xs font-light break-words leading-relaxed opacity-75 w-full">
-
-                        {String(row[headerName] || '---')}
-
-                      </p>
-
-                      {colIndex !== csvHeaders.length - 1 && (
-
-                        <div className="absolute top-0 right-0 h-full w-[2px] bg-brand-line opacity-20" />
-
-                      )}
-
-                    </div>
-
-                  ))}
-
-                </div>
-
-              ))
-
+            filteredRows.slice(0, visibleCount).map((row, rowIndex) => (
+              <div
+                key={rowIndex}
+                className={`grid grid-cols-8 px-4 border-b border-white/5 hover:bg-brand-blue/10 transition-colors ${rowIndex % 2 === 1 ? 'bg-surface-raised' : ''}`}
+              >
+                {csvHeaders.map((headerName, colIndex) => (
+                  <div key={colIndex} className="py-3 px-3 relative min-h-[44px] flex items-center min-w-0">
+                    <p className="text-xs font-light break-words leading-relaxed opacity-75 w-full">
+                      {String(row[headerName] || '---')}
+                    </p>
+                    {colIndex !== csvHeaders.length - 1 && (
+                      <div className="absolute top-0 right-0 h-full w-[2px] bg-brand-line opacity-20" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))
           )}
 
         </div>
@@ -386,5 +200,4 @@ export default function DataView() {
     </div>
 
   );
-
 }

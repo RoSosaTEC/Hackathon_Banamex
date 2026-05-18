@@ -165,20 +165,20 @@ export default function GraficasView() {
       <div className="flex-1 flex flex-row min-h-0 gap-4">
 
         {/* PANEL LATERAL */}
-        <div className="w-44 flex flex-col border border-brand-line shrink-0">
+        <div className="w-44 flex flex-col border border-brand-line/50 shrink-0 bg-surface-raised">
           <div className="flex justify-between items-center px-3 py-2 border-b border-brand-line">
-            <span className="text-xs font-mono opacity-60 uppercase tracking-widest">Sucursales</span>
+            <span className="text-xs font-mono text-brand-blue uppercase tracking-widest">Sucursales</span>
           </div>
           <div className="flex gap-2 px-3 py-2 border-b border-brand-line">
             <button
               onClick={() => setSelectedBranches(allBranches)}
-              className="flex-1 text-xs font-mono py-1 border border-brand-line hover:bg-white/10 transition-colors cursor-pointer"
+              className="flex-1 text-xs font-mono py-1 border border-brand-line hover:bg-brand-blue/10 hover:text-brand-blue transition-colors cursor-pointer"
             >
               Todas
             </button>
             <button
               onClick={() => setSelectedBranches([])}
-              className="flex-1 text-xs font-mono py-1 border border-brand-line hover:bg-white/10 transition-colors cursor-pointer"
+              className="flex-1 text-xs font-mono py-1 border border-brand-line hover:bg-brand-blue/10 hover:text-brand-blue transition-colors cursor-pointer"
             >
               Ninguna
             </button>
@@ -214,7 +214,7 @@ export default function GraficasView() {
         </div>
 
         {/* GRÁFICA */}
-        <div className="flex-1 border border-brand-line min-h-0 p-4">
+        <div className="flex-1 border border-brand-line/50 min-h-0 p-4 bg-surface-raised">
           {selectedBranches.length === 0 ? (
             <div className="h-full flex items-center justify-center opacity-40 font-light">
               Selecciona al menos una sucursal.
