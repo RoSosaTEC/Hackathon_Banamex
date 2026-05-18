@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tus colores base */
+  --color-brand-blue: #004785;
+  --color-brand-blue-light: #68cce7;
+  --color-brand-blue-red: #ee3124;
+
+
+  /* Tus fuentes base (se usan como font-primary o font-accent) */
+  --font-primary: "Inter", sans-serif;
+  
+  /* Tus puntos de ruptura para diseño responsivo (se usa como tablet:flex) */
+  --breakpoint-tablet: 640px;
+}
